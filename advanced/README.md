@@ -19,5 +19,5 @@ git config --global --add safe.directory /home/coder/work
 ```sh
 go install github.com/agnivade/wasmbrowsertest/cmd/cleanenv@latest
 PATH="$(go env GOPATH)/bin":$PATH
-cleanenv -remove-prefix O -remove-prefix L -remove-prefix K -remove-prefix W -remove-prefix G -- go run github.com/hajimehoshi/wasmserve@latest -http ":8000" .
+cleanenv -remove-prefix CODEBOX -- go run github.com/hajimehoshi/wasmserve@latest -http ":8000" .
 ```
