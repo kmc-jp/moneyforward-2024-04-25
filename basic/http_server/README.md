@@ -33,7 +33,11 @@ go run main.go
 この HTTP サーバに対して、HTTP リクエストを行うことで、固定のテキストが返されます。
 
 この HTTP サーバはポート `8080` で接続を待機します。
-そのため、ブラウザで `http://localhost:8080` にアクセスすることで、固定のテキスト `Hello, World!` が表示されます。
+
+code-server を利用している場合は、赤枠内の「Open in Browser」というボタンを押すと、直接ブラウザで開くことができます。
+ブラウザで開くと、固定のテキスト `Hello, World!` が表示されます。
+
+![images/open_browser.jpg](images/open_browser.jpg)
 
 ## サーバに HTTP クライアントを利用してアクセスする
 
