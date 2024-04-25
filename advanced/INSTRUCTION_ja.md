@@ -14,7 +14,7 @@
 
 - 外円の内側に波紋を表現した小さな円をランダムな位置に配置
   - 外円 (screenWidth または screenHeight の半分を半径とする円) を想定します
-  - 小さな円の中心からの距離は log10(1-1000の乱数)/3 * 外円の半径で求める
+  - 小さな円の中心からの距離は `log10({1-1000の乱数})/3 * 外円の半径`で求める
   - 小さな円の角度は 0 - 2π の乱数で決定する
 - 毎描画毎に波紋を拡大しつつ、色を薄くしていきます
 - 最大の波紋数を超えたら古いものから削除していきます
@@ -24,17 +24,92 @@
 
 [answers](./answers/) に各stepのサンプル解答を用意してるので、詰まってしまったら参考にしてください。
 
-## Ebitengine インストール
+## EbitengineでHello, World!を表示しよう
 
-公式サイトのインストール手順に沿ってインストールします。
+基本的には公式サイトのインストール手順に沿って進めます。
 https://ebitengine.org/ja/documents/install.html?os=linux
 
-`Hello, World!` が表示されるところまで進めましょう。
+### codeboxでプログラムを書く場合の前準備
+
+codebox, code-serverを利用している場合は公式サイトの手順通りには進めることができません。
+WINDOWシステムが存在していないので、wasmとしてビルドしてhttp serverでサーブし、ブラウザからアクセスする必要があります。
+ちょっとめんどくさそうですが、https://github.com/hajimehoshi/wasmserve が一発でこの問題を解決してくれるので今回はこれを使います。
+また、今回のcodebox環境特有の問題の回避策としてcleanenvを利用して起動するという手順を取ります。
+なんだかややこしそうですが、具体的には以下を実行すればOKです。
+
+準備
+
+```sh
+go install github.com/agnivade/wasmbrowsertest/cmd/cleanenv@latest
+PATH="$(go env GOPATH)/bin":$PATH
+```
+
+プログラムの実行は`go run .`の代わりに以下を使います。
+
+```sh
+cleanenv -remove-prefix CODEBOX -- go run github.com/hajimehoshi/wasmserve@latest -http ":8000" .
+```
+
+### Hello, World!をしてみよう
+
+まずはコードを書くためのディレクトリを作ります。
+
+```sh
+cd ./advanced
+mkdir myart
+cd myart
+
+go mod init example.com/myart
+touch main.go
+```
+
+エディタで`./myart/main.go`を開いて公式サイトのインストール手順に掲載されている`Hello, World!`のコードを丸ごと貼り付けましょう。
+
+<details>
+  <summary>EbitengineでHello, World!のコード</summary>
+
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+)
+
+type Game struct{}
+
+func (g *Game) Update() error {
+	return nil
+}
+
+func (g *Game) Draw(screen *ebiten.Image) {
+	ebitenutil.DebugPrint(screen, "Hello, World!")
+}
+
+func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+	return 320, 240
+}
+
+func main() {
+	ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowTitle("Hello, World!")
+	if err := ebiten.RunGame(&Game{}); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+</details>
 
 ## step.1 円を一つ描いてみよう
 
 基本的なベクタグラフィクスは vector packageで提供されているので、まずは円を一つ描いてみよう。
+
 https://pkg.go.dev/github.com/hajimehoshi/ebiten/v2/vector
+
+vector packageの導入
 
 ```sh
 go get github.com/hajimehoshi/ebiten/v2/vector
@@ -68,7 +143,7 @@ type Bubble struct {
 
 変化させるためには、Update関数で値を変更します。
 
-また、変化スピードはebitengineのTPS(tick per second)に依存してしまうので、必要に応じて ebiten.SetTPS(n) で調整しましょう。 
+また、変化スピードはebitengineのTPS(tick per second)に依存してしまうので、必要に応じて ebiten.SetTPS(n) で調整しましょう。
 
 </details>
 
@@ -110,10 +185,17 @@ for e := l.Front(); e != nil; e = e.Next() {
 <details>
   <summary>ヒント</summary>
 
-半径Rの外円の中心からの距離dを乱数で決定するには。
+1-1000の乱数を生成するには、
 
 ```go
-d := rand.Float32() * R
+a := rand.IntN(1000) + 1
+```
+
+小さな円の中心からの距離を `log10({1-1000の乱数})/3 * 外円の半径`で求めるには、
+
+```go
+R := screenHeight / 2
+d := float32(math.Log10(a)/3) * float32(R)
 ```
 
 三角関数を使って円に沿って配置する場合は、角度theta(0-2π)を乱数で決めると良いので、
