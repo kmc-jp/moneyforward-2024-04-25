@@ -6,6 +6,8 @@ HTTP は、Web サーバーとクライアント間でデータを送受信す�
 Google Chrome や Safari などの Web ブラウザは、HTTP を使用して Web サーバーと通信します。
 HTTP を使用して Web サーバーからデータを取得するプログラムを HTTP クライアントと呼びます。
 
+![images/http.jpg](images/http.jpg)
+
 実際の Web ページは、HTML や CSS、JavaScript などの言語で記述されています。
 ブラウザは、これらの言語を解釈して Web ページを画面上に表示します。
 この表示のためにはレンダリングエンジンというものが必要です。

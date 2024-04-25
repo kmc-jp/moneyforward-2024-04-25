@@ -20,6 +20,10 @@ Drawing rules:
 - If the maximum number of ripples is exceeded, delete from the old ones
 - With each drawing, a new ripple is placed
 
+## Sample Answers
+
+If you get stuck, please refer to the sample answers prepared for each step in the [answers](./answers/) directory.
+
 ## Let's display "Hello, World!" by Ebitengine
 
 Basically, Follow the installation instructions on the official site.
